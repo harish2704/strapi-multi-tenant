@@ -14,6 +14,10 @@ const transactionCtx = require('./transaction-context');
 const { transformContentTypes } = require('./utils/content-types');
 const { validateDatabase } = require('./validations');
 
+const { merge } = require ( 'lodash/fp' );
+const debug =  require( 'debug' )('strapi:database');
+
+
 class Database {
   constructor(config) {
     this.metadata = createMetadata(config.models);
@@ -31,7 +35,32 @@ class Database {
     this.dialect = getDialect(this);
     this.dialect.configure();
 
-    this.connection = createConnection(this.config.connection);
+    if (process.env.MULTI_TENANT && this.config.settings.tenantMap) {
+      this.connectionMap = this.createConnectionMap(
+        this.config.connection,
+        this.config.settings.tenantMap
+      );
+      this.defaultTenant = process.env.DEFAULT_TENANT || 'default-tenant';
+      debug(
+        `Enabling multitenant support: defaultTenant=${this.defaultTenant} allTenants=${Object.keys(
+          this.connectionMap
+        ).join(', ')}`
+      );
+      this.requestContext = strapi.requestContext;
+      Object.defineProperties(this, {
+        connection: {
+          get: () => {
+            const hostname = this.requestContext.get()?.request?.hostname;
+            const defaultTenant = this.defaultTenant;
+            const tenant = hostname || defaultTenant;
+            debug(`get connection: hostname=${hostname} tenant=${tenant}`);
+            return this.connectionMap[tenant] || this.connectionMap[defaultTenant];
+          },
+        },
+      });
+    } else {
+      this.connection = createConnection(this.config.connection);
+    }
 
     this.dialect.initialize();
 
@@ -41,6 +70,16 @@ class Database {
     this.lifecycles = createLifecyclesProvider(this);
 
     this.entityManager = createEntityManager(this);
+  }
+
+  createConnectionMap(config, tenantMap) {
+    // Hashmap of <tenant, dbconnection>
+    const connectionMap = {};
+    for (const tenant in tenantMap) {
+      config = merge(config, tenantMap[tenant]);
+      connectionMap[tenant] = createConnection(config);
+    }
+    return connectionMap;
   }
 
   query(uid) {
