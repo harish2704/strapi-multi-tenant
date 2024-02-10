@@ -4,6 +4,9 @@ import path from 'path';
 import fse from 'fs-extra';
 import * as utils from '@strapi/utils';
 
+import createDebugger from 'debug';
+const debug = createDebugger('strapi:provider:upload-local');
+
 interface File {
   name: string;
   alternativeText?: string;
@@ -28,7 +31,7 @@ interface File {
 const { PayloadTooLargeError } = utils.errors;
 const { kbytesToBytes, bytesToHumanReadable } = utils.file;
 
-const UPLOADS_FOLDER_NAME = 'uploads';
+const UPLOADS_FOLDER_BASE = 'uploads';
 
 interface InitOptions {
   sizeLimit?: number;
@@ -48,12 +51,57 @@ export default {
     }
 
     // Ensure uploads folder exists
-    const uploadPath = path.resolve(strapi.dirs.static.public, UPLOADS_FOLDER_NAME);
+    const uploadPath = path.resolve(strapi.dirs.static.public, UPLOADS_FOLDER_BASE);
     if (!fse.pathExistsSync(uploadPath)) {
       throw new Error(
         `The upload folder (${uploadPath}) doesn't exist or is not accessible. Please make sure it exists.`
       );
     }
+    let enableMultiTenant = process.env.MULTI_TENANT;
+
+    let tenantMap: Record<string, any>;
+
+
+    if(enableMultiTenant){
+      debug('Enabling MULTI_TENANT for uploads...');
+      tenantMap = strapi.config.get('tenants');
+      for(const tenant in tenantMap){
+        const tenantUploadDir = tenantMap[tenant].uploadDir;
+        const tenantUploadPath = path.resolve(uploadPath, tenantUploadDir);
+        if (!fse.pathExistsSync(tenantUploadPath)) {
+          debug(`Tenant uploaddir=${tenantUploadPath} doesnot exists. Creating it ...`);
+          fs.mkdirSync(tenantUploadPath, {recursive: true});
+        }else{
+          debug(`Tenant uploaddir=${tenantUploadPath} exists...`);
+        }
+      }
+    }
+
+    function getUploadPath(){
+      let uploadsDir = uploadPath;
+      if(enableMultiTenant){
+        const hostname = strapi.requestContext.get()?.request?.hostname;
+        uploadsDir = path.resolve(uploadsDir, tenantMap[hostname].uploadDir);
+        debug(`Multi-tenant uploadPath = ${uploadsDir}`);
+      }else{
+        debug(`uploadPath = ${uploadsDir}`);
+      }
+      return uploadsDir;
+    }
+
+    function getUploadDirName(){
+      let uploadsDir = UPLOADS_FOLDER_BASE;
+      if(enableMultiTenant){
+        const hostname = strapi.requestContext.get()?.request?.hostname;
+        uploadsDir += `/${tenantMap[hostname].uploadDir}`;
+        debug(`Multi-tenant uploadsDir = ${uploadsDir}`);
+      }else{
+        debug(`uploadsDir = ${uploadsDir}`);
+      }
+      return uploadsDir;
+    }
+
+
 
     return {
       checkFileSize(file: File, options: CheckFileSizeOptions) {
@@ -84,13 +132,12 @@ export default {
         return new Promise((resolve, reject) => {
           pipeline(
             stream,
-            fs.createWriteStream(path.join(uploadPath, `${file.hash}${file.ext}`)),
+            fs.createWriteStream(path.join(getUploadPath(), `${file.hash}${file.ext}`)),
             (err) => {
               if (err) {
                 return reject(err);
               }
-
-              file.url = `/${UPLOADS_FOLDER_NAME}/${file.hash}${file.ext}`;
+              file.url = `/${getUploadDirName()}/${file.hash}${file.ext}`;
 
               resolve();
             }
@@ -106,12 +153,12 @@ export default {
 
         return new Promise((resolve, reject) => {
           // write file in public/assets folder
-          fs.writeFile(path.join(uploadPath, `${file.hash}${file.ext}`), buffer, (err) => {
+          fs.writeFile(path.join(getUploadPath(), `${file.hash}${file.ext}`), buffer, (err) => {
             if (err) {
               return reject(err);
             }
 
-            file.url = `/${UPLOADS_FOLDER_NAME}/${file.hash}${file.ext}`;
+            file.url = `/${getUploadDirName()}/${file.hash}${file.ext}`;
 
             resolve();
           });
@@ -119,7 +166,7 @@ export default {
       },
       delete(file: File): Promise<string | void> {
         return new Promise((resolve, reject) => {
-          const filePath = path.join(uploadPath, `${file.hash}${file.ext}`);
+          const filePath = path.join(getUploadPath(), `${file.hash}${file.ext}`);
 
           if (!fs.existsSync(filePath)) {
             resolve("File doesn't exist");
