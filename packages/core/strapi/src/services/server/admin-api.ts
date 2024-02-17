@@ -3,7 +3,7 @@ import { createAPI } from './api';
 
 const createAdminAPI = (strapi: Strapi) => {
   const opts = {
-    prefix: '', // '/admin';
+    prefix: process.env.STRAPI_ADMIN_BACKEND_URL||'', // '/admin';
     type: 'admin',
   };
 
