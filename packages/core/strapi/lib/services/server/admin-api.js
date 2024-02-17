@@ -4,7 +4,7 @@ const { createAPI } = require('./api');
 
 const createAdminAPI = (strapi) => {
   const opts = {
-    prefix: '', // '/admin';
+    prefix: process.env.STRAPI_ADMIN_BACKEND_URL || '', // '/admin';
     type: 'admin',
   };
 
