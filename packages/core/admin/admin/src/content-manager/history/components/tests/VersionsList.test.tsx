@@ -39,7 +39,7 @@ describe('VersionsList', () => {
         page={1}
         contentType="api::kitchensink.kitchensink"
         // @ts-expect-error – we don't need to bother formatting the layout
-        layout={mockData.contentManager.collectionTypeLayout}
+        layout={mockData.contentManager.collectionTypeConfiguration}
         versions={mockHistoryVersionsData.historyVersions}
         selectedVersion={mockHistoryVersionsData.historyVersions.data[0]}
       >
