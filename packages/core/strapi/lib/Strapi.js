@@ -455,7 +455,16 @@ class Strapi {
       contentTypes: strapi.contentTypes,
     });
 
-    await this.db.schema.sync();
+    if( process.env.MULTI_TENANT ){
+      for( let hostname in this.db.connectionMap ){
+        // console.log(requestContext);
+        // process.exit();
+        requestContext.enterWith({request:{ hostname, }});
+        await this.db.schema.sync();
+      }
+    }else{
+      await this.db.schema.sync();
+    }
 
     if (this.EE) {
       await ee.checkLicense({ strapi: this });

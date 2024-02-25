@@ -12,6 +12,10 @@ const requestCtx = {
   get() {
     return storage.getStore();
   },
+
+  enterWith(store){
+    return storage.enterWith(store);
+  },
 };
 
 module.exports = requestCtx;
