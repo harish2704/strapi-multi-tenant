@@ -7535,13 +7535,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@strapi/admin@4.11.7, @strapi/admin@workspace:packages/core/admin":
+"@strapi/admin@4.11.7-multitenant.1, @strapi/admin@workspace:packages/core/admin":
   version: 0.0.0-use.local
   resolution: "@strapi/admin@workspace:packages/core/admin"
   dependencies:
     "@casl/ability": ^5.4.3
     "@pmmmwh/react-refresh-webpack-plugin": 0.5.10
-    "@strapi/data-transfer": 4.11.7
+    "@strapi/data-transfer": 4.11.7-multitenant.1
     "@strapi/design-system": 1.8.2
     "@strapi/helper-plugin": 4.11.7
     "@strapi/icons": 1.8.2
@@ -7639,12 +7639,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@strapi/data-transfer@4.11.7, @strapi/data-transfer@workspace:packages/core/data-transfer":
+"@strapi/data-transfer@4.11.7-multitenant.1, @strapi/data-transfer@workspace:packages/core/data-transfer":
   version: 0.0.0-use.local
   resolution: "@strapi/data-transfer@workspace:packages/core/data-transfer"
   dependencies:
     "@strapi/logger": 4.11.7
-    "@strapi/strapi": 4.11.7
+    "@strapi/strapi": 4.11.7-multitenant.1
     "@tsconfig/node16": 1.0.3
     "@types/fs-extra": 9.0.13
     "@types/jest": 29.5.2
@@ -7672,7 +7672,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@strapi/database@4.11.7, @strapi/database@workspace:packages/core/database":
+"@strapi/database@4.11.7-multitenant.1, @strapi/database@workspace:packages/core/database":
   version: 0.0.0-use.local
   resolution: "@strapi/database@workspace:packages/core/database"
   dependencies:
@@ -7890,12 +7890,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@strapi/plugin-content-type-builder@4.11.7, @strapi/plugin-content-type-builder@workspace:packages/core/content-type-builder":
+"@strapi/plugin-content-type-builder@4.11.7-multitenant.1, @strapi/plugin-content-type-builder@workspace:packages/core/content-type-builder":
   version: 0.0.0-use.local
   resolution: "@strapi/plugin-content-type-builder@workspace:packages/core/content-type-builder"
   dependencies:
     "@sindresorhus/slugify": 1.1.0
-    "@strapi/admin": 4.11.7
+    "@strapi/admin": 4.11.7-multitenant.1
     "@strapi/design-system": 1.8.2
     "@strapi/generators": 4.11.7
     "@strapi/helper-plugin": 4.11.7
@@ -8088,14 +8088,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@strapi/plugin-upload@4.11.7, @strapi/plugin-upload@workspace:packages/core/upload":
+"@strapi/plugin-upload@4.11.7-multitenant.1, @strapi/plugin-upload@workspace:packages/core/upload":
   version: 0.0.0-use.local
   resolution: "@strapi/plugin-upload@workspace:packages/core/upload"
   dependencies:
     "@strapi/design-system": 1.8.2
     "@strapi/helper-plugin": 4.11.7
     "@strapi/icons": 1.8.2
-    "@strapi/provider-upload-local": 4.11.7
+    "@strapi/provider-upload-local": 4.11.7-multitenant.1
     "@strapi/utils": 4.11.7
     "@testing-library/dom": 9.2.0
     "@testing-library/react": 14.0.0
@@ -8267,7 +8267,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@strapi/provider-upload-local@4.11.7, @strapi/provider-upload-local@workspace:packages/providers/upload-local":
+"@strapi/provider-upload-local@4.11.7-multitenant.1, @strapi/provider-upload-local@workspace:packages/providers/upload-local":
   version: 0.0.0-use.local
   resolution: "@strapi/provider-upload-local@workspace:packages/providers/upload-local"
   dependencies:
@@ -8279,23 +8279,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@strapi/strapi@4.11.7, @strapi/strapi@workspace:packages/core/strapi":
+"@strapi/strapi@4.11.7-multitenant.1, @strapi/strapi@workspace:packages/core/strapi":
   version: 0.0.0-use.local
   resolution: "@strapi/strapi@workspace:packages/core/strapi"
   dependencies:
     "@koa/cors": 3.4.3
     "@koa/router": 10.1.1
-    "@strapi/admin": 4.11.7
-    "@strapi/data-transfer": 4.11.7
-    "@strapi/database": 4.11.7
+    "@strapi/admin": 4.11.7-multitenant.1
+    "@strapi/data-transfer": 4.11.7-multitenant.1
+    "@strapi/database": 4.11.7-multitenant.1
     "@strapi/generate-new": 4.11.7
     "@strapi/generators": 4.11.7
     "@strapi/logger": 4.11.7
     "@strapi/permissions": 4.11.7
     "@strapi/plugin-content-manager": 4.11.7
-    "@strapi/plugin-content-type-builder": 4.11.7
+    "@strapi/plugin-content-type-builder": 4.11.7-multitenant.1
     "@strapi/plugin-email": 4.11.7
-    "@strapi/plugin-upload": 4.11.7
+    "@strapi/plugin-upload": 4.11.7-multitenant.1
     "@strapi/typescript-utils": 4.11.7
     "@strapi/utils": 4.11.7
     bcryptjs: 2.4.3
@@ -18312,7 +18312,7 @@ __metadata:
     "@strapi/provider-email-mailgun": 4.11.7
     "@strapi/provider-upload-aws-s3": 4.11.7
     "@strapi/provider-upload-cloudinary": 4.11.7
-    "@strapi/strapi": 4.11.7
+    "@strapi/strapi": 4.11.7-multitenant.1
     better-sqlite3: 8.3.0
     lodash: 4.17.21
     mysql: 2.18.1
@@ -22223,7 +22223,7 @@ __metadata:
   dependencies:
     "@strapi/plugin-i18n": 4.11.7
     "@strapi/plugin-users-permissions": 4.11.7
-    "@strapi/strapi": 4.11.7
+    "@strapi/strapi": 4.11.7-multitenant.1
     better-sqlite3: 8.3.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -22239,7 +22239,7 @@ __metadata:
     "@strapi/provider-email-mailgun": 4.11.7
     "@strapi/provider-upload-aws-s3": 4.11.7
     "@strapi/provider-upload-cloudinary": 4.11.7
-    "@strapi/strapi": 4.11.7
+    "@strapi/strapi": 4.11.7-multitenant.1
     lodash: 4.17.21
     mysql: 2.18.1
     passport-google-oauth2: 0.2.0
