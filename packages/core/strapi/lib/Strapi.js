@@ -47,6 +47,7 @@ const { destroyOnSignal } = require('./utils/signals');
 const getNumberOfDynamicZones = require('./services/utils/dynamic-zones');
 const sanitizersRegistry = require('./core/registries/sanitizers');
 const convertCustomFieldType = require('./utils/convert-custom-field-type');
+const { runForAllTenants } = require('./utils/multi-tenant');
 
 // TODO: move somewhere else
 const draftAndPublishSync = require('./migrations/draft-publish');
@@ -455,16 +456,7 @@ class Strapi {
       contentTypes: strapi.contentTypes,
     });
 
-    if( process.env.MULTI_TENANT ){
-      for( let hostname in this.db.connectionMap ){
-        // console.log(requestContext);
-        // process.exit();
-        requestContext.enterWith({request:{ hostname, }});
-        await this.db.schema.sync();
-      }
-    }else{
-      await this.db.schema.sync();
-    }
+    await runForAllTenants(this, () => this.db.schema.sync());
 
     if (this.EE) {
       await ee.checkLicense({ strapi: this });

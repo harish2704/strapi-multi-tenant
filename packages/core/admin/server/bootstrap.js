@@ -5,6 +5,7 @@ const { pipeAsync } = require('@strapi/utils');
 const { getService } = require('./utils');
 const adminActions = require('./config/admin-actions');
 const adminConditions = require('./config/admin-conditions');
+const { runForAllTenants } = require('@strapi/strapi/lib/utils/multi-tenant');
 
 const defaultAdminAuthSettings = {
   providers: {
@@ -70,7 +71,7 @@ const syncAPITokensPermissions = async () => {
   }
 };
 
-module.exports = async () => {
+module.exports = async ({strapi}) => {
   await registerAdminConditions();
   await registerPermissionActions();
   registerModelHooks();
@@ -82,16 +83,19 @@ module.exports = async () => {
   const transferService = getService('transfer');
   const tokenService = getService('token');
 
-  await roleService.createRolesIfNoneExist();
-  await roleService.resetSuperAdminPermissions();
-  await roleService.displayWarningIfNoSuperAdmin();
 
-  await permissionService.cleanPermissionsInDatabase();
+  await runForAllTenants( strapi, async () => {
+    await roleService.createRolesIfNoneExist();
+    await roleService.resetSuperAdminPermissions();
+    await roleService.displayWarningIfNoSuperAdmin();
 
-  await userService.displayWarningIfUsersDontHaveRole();
+    await permissionService.cleanPermissionsInDatabase();
 
-  await syncAuthSettings();
-  await syncAPITokensPermissions();
+    await userService.displayWarningIfUsersDontHaveRole();
+
+    await syncAuthSettings();
+    await syncAPITokensPermissions();
+  });
 
   apiTokenService.checkSaltIsDefined();
   transferService.token.checkSaltIsDefined();
